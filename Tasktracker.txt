@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background: lavender;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tracker {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 0 10px gray;
+      border: 2px solid mediumslateblue;
+    }
+    h3 {
+      color: darkslateblue;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      background-color: mediumslateblue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: slateblue;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    li {
+      margin: 0.4rem 0;
+      padding: 0.5rem;
+      background: lightcyan;
+      color: darkslategray;
+      border-left: 5px solid skyblue;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    li.done {
+      text-decoration: line-through;
+      background: honeydew;
+      color: gray;
+      border-left: 5px solid limegreen;
+    }
+    .summary {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      background: floralwhite;
+      padding: 0.6rem;
+      border-radius: 5px;
+      color: darkblue;
+    }
+  </style>
+</head>
+<body>
+  <div class="tracker">
+    <h3>🎯 Task Tracker</h3>
+    <input type="text" id="taskInput" placeholder="Enter a task" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+    <div class="summary" id="summary"></div>
+  </div>
+
+  <script>
+    const tasks = [];
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const name = input.value.trim();
+      if (name === "") return;
+      tasks.push({ name, done: false });
+      input.value = "";
+      renderTasks();
+    }
+
+    function toggleTask(index) {
+      tasks[index].done = !tasks[index].done;
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      const summary = document.getElementById("summary");
+      list.innerHTML = "";
+
+      let doneTasks = [], pendingTasks = [];
+
+      tasks.forEach((task, i) => {
+        const li = document.createElement("li");
+        li.textContent = task.name;
+        if (task.done) {
+          li.classList.add("done");
+          doneTasks.push(task.name);
+        } else {
+          pendingTasks.push(task.name);
+        }
+        li.onclick = () => toggleTask(i);
+        list.appendChild(li);
+      });
+
+      summary.innerHTML = `
+        <strong>Total:</strong> ${tasks.length}<br>
+        ✅ <strong>Done (${doneTasks.length})</strong>: ${doneTasks.join(", ") || "None"}<br>
+        ⏳ <strong>Pending (${pendingTasks.length})</strong>: ${pendingTasks.join(", ") || "None"}
+      `;
+    }
+  </script>
+</body>
+</html>
